@@ -42,7 +42,6 @@ export default function Home() {
 
     try {
       const response = await postData("/api/product", productForm);
-      console.log("response: ", response);
       if (response.ok) {
         // Product added successfully
         setAlert("Your Product has been added!");
