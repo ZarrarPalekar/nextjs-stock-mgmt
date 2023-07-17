@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Header from "./components/Header";
+import { postData } from "./helpers";
 
 export default function Home() {
   const [dropdown, setDropdown] = useState([]);
@@ -40,14 +41,8 @@ export default function Home() {
     e.preventDefault();
 
     try {
-      const response = await fetch("/api/product", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(productForm),
-      });
-
+      const response = await postData("/api/product", productForm);
+      console.log("response: ", response);
       if (response.ok) {
         // Product added successfully
         setAlert("Your Product has been added!");
