@@ -1,13 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "./components/Header";
 
 export default function Home() {
-  const [dropdown, setDropdown] = useState([
-    { slug: "Product 1", quantity: 10, price: 50 },
-    { slug: "Product 2", quantity: 5, price: 100 },
-    { slug: "Product 3", quantity: 2, price: 75 },
-  ]);
+  const [dropdown, setDropdown] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingaction, setLoadingAction] = useState(false);
   const [productForm, setProductForm] = useState({
@@ -15,11 +11,18 @@ export default function Home() {
     quantity: "",
     price: "",
   });
-  const [products, setProducts] = useState([
-    { slug: "Product 1", quantity: 10, price: 50 },
-    { slug: "Product 2", quantity: 5, price: 100 },
-    { slug: "Product 3", quantity: 2, price: 75 },
-  ]);
+  const [products, setProducts] = useState([]);
+
+  const fetchProducts = async () => {
+    const response = await fetch("/api/product");
+    let rjson = await response.json();
+    setProducts(rjson.products);
+  };
+
+  useEffect(() => {
+    // Fetch products on load
+    fetchProducts();
+  }, []);
 
   const onDropdownEdit = (e) => {
     // Placeholder code
@@ -30,11 +33,35 @@ export default function Home() {
   };
 
   const handleChange = (e) => {
-    // Placeholder code
+    setProductForm({ ...productForm, [e.target.name]: e.target.value });
   };
 
-  const addProduct = (e) => {
-    // Placeholder code
+  const addProduct = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch("/api/product", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(productForm),
+      });
+
+      if (response.ok) {
+        // Product added successfully
+        setAlert("Your Product has been added!");
+        setProductForm({});
+      } else {
+        // Handle error case
+        console.error("Error adding product");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+    // Fetch all the products again to sync back
+    fetchProducts();
+    setProductForm({ slug: "", quantity: "", price: "" });
   };
 
   return (
@@ -101,8 +128,8 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Display Current Stock  */}
-      <div className="container mx-auto my-8">
+      <div className="container mx-auto my-10">
+        <hr className="border-orange-300 my-8" />
         <h1 className="text-4xl font-semibold mb-6">Add a Product</h1>
 
         <form>
@@ -157,27 +184,39 @@ export default function Home() {
           </button>
         </form>
       </div>
-      <div className="container my-8 mx-auto">
+
+      <div className="container mx-auto my-10">
+        <hr className="border-orange-300 my-8" />
         <h1 className="text-4xl font-semibold mb-6">Display Current Stock</h1>
 
-        <table className="table-auto w-full">
-          <thead>
-            <tr>
-              <th className="px-4 py-2">Product Name</th>
-              <th className="px-4 py-2">Quantity</th>
-              <th className="px-4 py-2">Price</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product) => (
-              <tr key={product.slug}>
-                <td className="border px-4 py-2">{product.slug}</td>
-                <td className="border px-4 py-2">{product.quantity}</td>
-                <td className="border px-4 py-2">₹{product.price}</td>
+        {products.length > 0 ? (
+          <table className="table-auto w-full">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 bg-gray-200">Product Name</th>
+                <th className="px-4 py-2 bg-gray-200">Quantity</th>
+                <th className="px-4 py-2 bg-gray-200">Price</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {products.map((product) => (
+                <tr key={product.slug}>
+                  <td className="border px-4 py-2 text-center">
+                    {product.slug}
+                  </td>
+                  <td className="border px-4 py-2 text-center">
+                    {product.quantity}
+                  </td>
+                  <td className="border px-4 py-2 text-center">
+                    ₹{product.price}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <h2 className="text-center text-xl mt-4">No products found</h2>
+        )}
       </div>
     </>
   );
