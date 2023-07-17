@@ -67,14 +67,14 @@ export default function Home() {
           Placeholder Alert Message
         </div>
         <h1 className="text-4xl font-semibold mb-6">Search a Product</h1>
-        <div className="flex flex-col mb-2 md:flex-row">
+        <div className="flex flex-col mb-4 md:flex-row">
           <input
             onChange={onDropdownEdit}
             type="text"
             placeholder="Enter a product name"
-            className="flex-1 border border-gray-300 px-4 py-2 rounded-l-md focus:outline-none focus:border-orange-500"
+            className="flex-1 border border-gray-300 px-4 py-3 rounded-l-md focus:outline-none focus:border-orange-500"
           />
-          <select className="border border-gray-300 px-4 py-2 rounded-r-md mt-2 md:mt-0 md:ml-2 focus:outline-none focus:border-orange-500">
+          <select className="border border-gray-300 px-4 py-3 rounded-r-md mt-2 md:mt-0 md:ml-2 focus:outline-none focus:border-orange-500">
             <option value="">All</option>
             <option value="category1">Category 1</option>
             <option value="category2">Category 2</option>
@@ -86,7 +86,7 @@ export default function Home() {
             <img width={74} src="/loading.svg" alt="" />
           </div>
         )}
-        <div className="dropcontainer relative w-full md:w-[72vw] bg-orange-100 rounded-md mt-2">
+        <div className="dropcontainer relative w-full md:w-[72vw] bg-orange-100 rounded-md mt-4">
           {dropdown.map((item) => (
             <div
               key={item.slug}
