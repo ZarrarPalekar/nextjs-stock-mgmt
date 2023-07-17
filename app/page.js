@@ -6,7 +6,7 @@ import { postData } from "./helpers";
 export default function Home() {
   const [dropdown, setDropdown] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [loadingaction, setLoadingAction] = useState(false);
+  const [loadingAction, setLoadingAction] = useState(false);
   const [productForm, setProductForm] = useState({
     slug: "",
     quantity: "",
@@ -99,7 +99,7 @@ export default function Home() {
                   onClick={() => {
                     buttonAction("minus", item.slug, item.quantity);
                   }}
-                  disabled={loadingaction}
+                  disabled={loadingAction}
                   className="subtract inline-block px-3 py-1 cursor-pointer bg-orange-500 text-white font-semibold rounded-lg shadow-md disabled:bg-orange-200"
                 >
                   -
@@ -111,7 +111,7 @@ export default function Home() {
                   onClick={() => {
                     buttonAction("plus", item.slug, item.quantity);
                   }}
-                  disabled={loadingaction}
+                  disabled={loadingAction}
                   className="add inline-block px-3 py-1 cursor-pointer bg-orange-500 text-white font-semibold rounded-lg shadow-md disabled:bg-orange-200"
                 >
                   +
