@@ -8,15 +8,15 @@ export async function GET(request) {
     const inventory = database.collection("inventory");
 
     // made slug unique
-    // inventory.createIndex(
-    //   { slug: 1 },
-    //   { unique: true },
-    //   function (err, result) {
-    //     if (err) {
-    //     } else {
-    //     }
-    //   }
-    // );
+    inventory.createIndex(
+      { slug: 1 },
+      { unique: true },
+      function (err, result) {
+        if (err) {
+        } else {
+        }
+      }
+    );
 
     const query = {};
     const products = await inventory.find(query).toArray();
