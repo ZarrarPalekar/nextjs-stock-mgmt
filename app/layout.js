@@ -5,7 +5,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Inventory Management System",
-  description: "A web app to manage inventory",
+  description: "A NextJS based web app to manage inventory",
 };
 
 export default function RootLayout({ children }) {
