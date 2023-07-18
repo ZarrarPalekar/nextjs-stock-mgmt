@@ -37,7 +37,7 @@ export async function POST(request) {
   } catch (err) {
     return NextResponse.json(
       { error: err.message },
-      { status: 400, statusText: err.message }
+      { status: 400, statusText: err }
     );
   } finally {
     disconnect(client);
