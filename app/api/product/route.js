@@ -35,7 +35,10 @@ export async function POST(request) {
     const product = await inventory.insertOne(body);
     return NextResponse.json({ product, ok: true });
   } catch (err) {
-    return NextResponse.json({}, { status: 400, statusText: err.message });
+    return NextResponse.json(
+      { error: err.message },
+      { status: 400, statusText: err.message }
+    );
   } finally {
     disconnect(client);
   }
