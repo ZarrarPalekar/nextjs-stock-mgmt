@@ -95,6 +95,7 @@ export default function Home() {
         setProductForm({});
       } else {
         // Handle error case
+        console.log("response: ", response);
         if (response.statusText.includes("duplicate")) {
           return setAlert(`Product ${productForm.slug} already exists`);
         }
@@ -133,7 +134,7 @@ export default function Home() {
             <img width={74} src="/loading.svg" alt="" />
           </div>
         )}
-        <div className="dropcontainer relative w-full md:w-[72vw] bg-orange-100 rounded-md mt-4">
+        <div className="dropcontainer relative w-full bg-orange-100 rounded-md mt-4">
           {dropdown.map((item) => (
             <div
               key={item.slug}
