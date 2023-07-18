@@ -121,12 +121,12 @@ export default function Home() {
             placeholder="Enter a product name"
             className="flex-1 border border-gray-300 px-4 py-3 rounded-l-md focus:outline-none focus:border-orange-500"
           />
-          <select className="border border-gray-300 px-4 py-3 rounded-r-md mt-2 md:mt-0 md:ml-2 focus:outline-none focus:border-orange-500">
+          {/* <select className="border border-gray-300 px-4 py-3 rounded-r-md mt-2 md:mt-0 md:ml-2 focus:outline-none focus:border-orange-500">
             <option value="">All</option>
             <option value="category1">Category 1</option>
             <option value="category2">Category 2</option>
             {/* Add more options as needed */}
-          </select>
+          {/* </select> */}
         </div>
         {loading && (
           <div className="flex justify-center items-center">
@@ -211,7 +211,7 @@ export default function Home() {
               Price
             </label>
             <input
-              min={1}
+              min={50}
               value={productForm?.price || ""}
               name="price"
               onChange={handleChange}
