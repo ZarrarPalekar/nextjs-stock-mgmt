@@ -13,11 +13,12 @@ export default function Home() {
     price: "",
   });
   const [products, setProducts] = useState([]);
+  const [alert, setAlert] = useState(null);
 
   const fetchProducts = async () => {
     const response = await fetch("/api/product");
-    let rjson = await response.json();
-    setProducts(rjson.products);
+    let jsonData = await response.json();
+    setProducts(jsonData.products);
   };
 
   useEffect(() => {
@@ -62,9 +63,7 @@ export default function Home() {
     <>
       <Header />
       <div className="container mx-auto my-8">
-        <div className="text-orange-800 text-center mb-4">
-          Placeholder Alert Message
-        </div>
+        <div className="text-orange-800 text-center mb-4">{alert}</div>
         <h1 className="text-4xl font-semibold mb-6">Search a Product</h1>
         <div className="flex flex-col mb-4 md:flex-row">
           <input
