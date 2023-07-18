@@ -13,7 +13,8 @@ export default function Home() {
     price: "",
   });
   const [products, setProducts] = useState([]);
-  const [alert, setAlert] = useState(null);
+  const [alert, setAlert] = useState("");
+  const [query, setQuery] = useState("");
 
   const fetchProducts = async () => {
     const response = await fetch("/api/product");
@@ -26,12 +27,56 @@ export default function Home() {
     fetchProducts();
   }, []);
 
-  const onDropdownEdit = (e) => {
-    // Placeholder code
+  const onDropdownEdit = async (e) => {
+    let value = e.target.value;
+    setQuery(value);
+    if (value.length > 3) {
+      setLoading(true);
+      setDropdown([]);
+      const response = await fetch("/api/search?query=" + query);
+      let rjson = await response.json();
+      setDropdown(rjson.products);
+      setLoading(false);
+    } else {
+      setDropdown([]);
+    }
   };
 
-  const buttonAction = (action, slug, quantity) => {
-    // Placeholder code
+  const buttonAction = async (action, slug, initialQuantity) => {
+    // Immediately change the quantity of the product with given slug in Products
+    if (action == "minus" && initialQuantity == 0) {
+      return;
+    }
+
+    let index = products.findIndex((item) => item.slug == slug);
+    let newProducts = JSON.parse(JSON.stringify(products));
+    if (action == "plus") {
+      newProducts[index].quantity = parseInt(initialQuantity) + 1;
+    } else {
+      newProducts[index].quantity = parseInt(initialQuantity) - 1;
+    }
+    setProducts(newProducts);
+
+    // Immediately change the quantity of the product with given slug in Dropdown
+    let indexdrop = dropdown.findIndex((item) => item.slug == slug);
+    let newDropdown = JSON.parse(JSON.stringify(dropdown));
+    if (action == "plus") {
+      newDropdown[indexdrop].quantity = parseInt(initialQuantity) + 1;
+    } else {
+      newDropdown[indexdrop].quantity = parseInt(initialQuantity) - 1;
+    }
+    setDropdown(newDropdown);
+
+    setLoadingAction(true);
+    const response = await fetch("/api/action", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ action, slug, initialQuantity }),
+    });
+    let r = await response.json();
+    setLoadingAction(false);
   };
 
   const handleChange = (e) => {
@@ -39,6 +84,7 @@ export default function Home() {
   };
 
   const addProduct = async (e) => {
+    setLoading(true);
     e.preventDefault();
 
     try {
@@ -49,10 +95,13 @@ export default function Home() {
         setProductForm({});
       } else {
         // Handle error case
-        console.error("Error adding product");
+        if (response.statusText.includes("duplicate")) {
+          return setAlert(`Product ${productForm.slug} already exists`);
+        }
       }
     } catch (error) {
-      console.error("Error:", error);
+    } finally {
+      setLoading(false);
     }
     // Fetch all the products again to sync back
     fetchProducts();
@@ -125,12 +174,13 @@ export default function Home() {
         <hr className="border-orange-300 my-8" />
         <h1 className="text-4xl font-semibold mb-6">Add a Product</h1>
 
-        <form>
+        <form onSubmit={addProduct}>
           <div className="mb-4">
             <label htmlFor="productName" className="block mb-2">
               Product Slug
             </label>
             <input
+              required
               value={productForm?.slug || ""}
               name="slug"
               onChange={handleChange}
@@ -145,6 +195,8 @@ export default function Home() {
               Quantity
             </label>
             <input
+              required
+              min={1}
               value={productForm?.quantity || ""}
               name="quantity"
               onChange={handleChange}
@@ -159,6 +211,7 @@ export default function Home() {
               Price
             </label>
             <input
+              min={1}
               value={productForm?.price || ""}
               name="price"
               onChange={handleChange}
@@ -169,7 +222,6 @@ export default function Home() {
           </div>
 
           <button
-            onClick={addProduct}
             type="submit"
             className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg shadow-md font-semibold"
           >

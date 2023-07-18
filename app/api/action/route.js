@@ -1,0 +1,36 @@
+import { MongoClient } from "mongodb";
+import { NextResponse } from "next/server";
+import { connect, disconnect } from "../mongo";
+
+export async function POST(request) {
+  let { action, slug, initialQuantity } = await request.json();
+  const client = connect();
+  try {
+    const database = client.db("stock");
+    const inventory = database.collection("inventory");
+    const filter = { slug: slug };
+
+    let newQuantity =
+      action == "plus"
+        ? parseInt(initialQuantity) + 1
+        : parseInt(initialQuantity) - 1;
+    const updateDoc = {
+      $set: {
+        quantity: newQuantity,
+      },
+    };
+    const result = await inventory.updateOne(filter, updateDoc, {});
+
+    return NextResponse.json({
+      success: true,
+      message: `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`,
+    });
+  } catch {
+    return NextResponse.json({
+      success: false,
+      message: `Some error occurred`,
+    });
+  } finally {
+    disconnect(client);
+  }
+}
